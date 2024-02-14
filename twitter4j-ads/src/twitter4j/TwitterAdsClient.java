@@ -6,6 +6,8 @@ import twitter4j.auth.Authorization;
 import twitter4j.auth.OAuthSupport;
 import twitter4j.conf.Configuration;
 import twitter4j.models.ads.HttpVerb;
+import twitter4j.responses.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsResponse;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

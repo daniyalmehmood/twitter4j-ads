@@ -1,7 +1,8 @@
-package twitter4j;
+package twitter4j.responses;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
+import twitter4j.*;
 import twitter4j.models.ads.TwitterRuntimeException;
 import twitter4j.util.TwitterAdHttpUtils;
 import twitter4j.util.TwitterAdUtil;

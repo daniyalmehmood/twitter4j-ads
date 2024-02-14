@@ -5,6 +5,7 @@ import twitter4j.*;
 import twitter4j.api.TwitterAdsPreviewApi;
 import twitter4j.models.ads.preview.TwitterPreviewInfo;
 import twitter4j.models.ads.preview.TwitterPreviewTarget;
+import twitter4j.responses.BaseAdsListResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.io.IOException;

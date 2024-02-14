@@ -6,6 +6,9 @@ import twitter4j.*;
 import twitter4j.api.TwitterAdsStatApi;
 import twitter4j.models.Granularity;
 import twitter4j.models.ads.*;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.util.List;

@@ -1,11 +1,10 @@
 package twitter4j.api;
 
-import twitter4j.BaseAdsResponse;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.TwitterException;
 import twitter4j.models.video.AssociateVideoToAccountResponse;
 import twitter4j.models.video.TwitterAccountMediaResponse;
 import twitter4j.models.video.TwitterCreativeType;
-import twitter4j.models.video.UploadMediaObjectResponse;
 
 /**
  * User: abhay

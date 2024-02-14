@@ -8,6 +8,8 @@ import twitter4j.api.TwitterAdsBiddingApi;
 import twitter4j.models.ads.BiddingRules;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.TwitterBidInfo;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
 import twitter4j.util.TwitterAdUtil;
 
 import java.lang.reflect.Type;

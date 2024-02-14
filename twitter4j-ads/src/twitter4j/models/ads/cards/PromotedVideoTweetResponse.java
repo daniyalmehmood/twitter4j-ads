@@ -1,6 +1,6 @@
 package twitter4j.models.ads.cards;
 
-import twitter4j.BaseAdsResponse;
+import twitter4j.responses.BaseAdsResponse;
 
 /**
  * User: prashant

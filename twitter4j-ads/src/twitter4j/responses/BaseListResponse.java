@@ -1,5 +1,7 @@
-package twitter4j;
+package twitter4j.responses;
 
+
+import twitter4j.responses.BaseAdsListResponse;
 
 /**
  * Use this only, if any data needs to be pulled using regular twitter domain objects
