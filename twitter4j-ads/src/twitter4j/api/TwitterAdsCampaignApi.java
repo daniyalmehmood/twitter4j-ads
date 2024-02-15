@@ -1,13 +1,13 @@
 package twitter4j.api;
 
-import com.google.common.base.Optional;
+import twitter4j.models.ads.Campaign;
+import twitter4j.models.ads.sort.CampaignSortByField;
 import twitter4j.responses.BaseAdsListResponseIterable;
 import twitter4j.responses.BaseAdsResponse;
 import twitter4j.TwitterException;
-import twitter4j.models.ads.Campaign;
-import twitter4j.models.ads.sort.CampaignSortByField;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * User: abhay
@@ -24,6 +24,7 @@ public interface TwitterAdsCampaignApi {
      * @param withDeleted          Include deleted results in your request. Defaults to false.
      * @param count                (optional) Specifies the number of campaigns to try and retrieve, up to a maximum of 1000 per distinct request.
      * @param cursor               (optional) Specify a cursor to retrieve data from a specific page (function automatically handles paging upon iteration when you do not specify cursor value).
+     * @param sortByField          (optional) Field by which campaigns will be sorted. Defaults to CampaignSortByField.CREATED_AT_DESC.
      * @return Retrieve details for some or all campaigns associated with the current account.
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/campaigns">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/campaigns</a>
@@ -54,11 +55,11 @@ public interface TwitterAdsCampaignApi {
     /**
      * @param accountId                    The identifier for the leveraged account.
      * @param campaignId                   The identifier of campaign to update.
-     * @param name                         (optional) Name to update the cmapaign with.
-     * @param totalBudgetAmountLocalMicro  Name to update the cmapaign with.
-     * @param dailyBudgetAmountLocalMicro  (optional) Name to update the cmapaign with.
-     * @param startTime                    (optional) Start time to update the cmapaign with.
-     * @param endTime                      (optional) End time to update the cmapaign with.
+     * @param name                         (optional) Name to update the campaign with.
+     * @param totalBudgetAmountLocalMicro  Name to update the campaign with.
+     * @param dailyBudgetAmountLocalMicro  (optional) Name to update the campaign with.
+     * @param startTime                    (optional) Start time to update the campaign with.
+     * @param endTime                      (optional) End time to update the campaign with.
      * @param paused                       (optional) Update the paused state of campaign.
      * @param standardDelivery             (optional) Update the standard delivery setting of campaign.
      * @param frequencyCap                 (if value passed greater than 0) Update integer representing the number of times for which one user could be delivered an ad to.
