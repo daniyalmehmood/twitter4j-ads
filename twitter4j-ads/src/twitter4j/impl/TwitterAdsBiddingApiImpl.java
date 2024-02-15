@@ -1,7 +1,5 @@
 package twitter4j.impl;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import twitter4j.*;
 import twitter4j.api.TwitterAdsBiddingApi;
@@ -15,6 +13,7 @@ import twitter4j.util.TwitterAdUtil;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static twitter4j.TwitterAdsConstants.PARAM_CURRENCY;
 import static twitter4j.TwitterAdsConstants.PATH_BIDDING_RULES;
@@ -42,26 +41,21 @@ public class TwitterAdsBiddingApiImpl implements TwitterAdsBiddingApi {
         return twitterAdsClient.executeHttpListRequest(baseUrl, param, type);
     }
 
-    /*s
-    This call does not hit any version of twitter ads api, it hits the same end point as is hit on native
-    * */
+    /*
+    This call does not hit any version of Twitter ads API; it hits the same endpoint as is hit on native.
+    */
     @Override
     public TwitterBidInfo getBidInfo(String accountId, String campaignType, Optional<String> currency, Optional<String> objectiveForBidding) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(campaignType, "campaignType");
-        List<HttpParameter> params = Lists.newArrayList();
-        String baseUrl = "https://ads.twitter.com/" + "accounts/" + accountId + "/campaigns/bid_guidance";
+        List<HttpParameter> params = new ArrayList<>();
+        String baseUrl = "https://ads.twitter.com/accounts/" + accountId + "/campaigns/bid_guidance";
         //noinspection ConstantConditions
         params.add(new HttpParameter("account", accountId));
         params.add(new HttpParameter("campaign_type", campaignType));
-        if (currency != null &&currency.isPresent()) {
-            params.add(new HttpParameter("currency", currency.get()));
-        }
-        if (objectiveForBidding != null && objectiveForBidding.isPresent()) {
-            params.add(new HttpParameter("objective", objectiveForBidding.get()));
-        }
+        currency.ifPresent(c -> params.add(new HttpParameter("currency", c)));
+        objectiveForBidding.ifPresent(o -> params.add(new HttpParameter("objective", o)));
         Type type = new TypeToken<TwitterBidInfo>() {}.getType();
-
-        return twitterAdsClient.executeRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.GET);
+        return twitterAdsClient.executeRequest(baseUrl, params.toArray(new HttpParameter[0]), type, HttpVerb.GET);
     }
 }
