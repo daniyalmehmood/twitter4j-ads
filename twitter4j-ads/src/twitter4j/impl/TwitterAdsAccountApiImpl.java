@@ -1,9 +1,6 @@
 package twitter4j.impl;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.collections.CollectionUtils;
 import twitter4j.*;
 import twitter4j.api.TwitterAdsAccountApi;
 import twitter4j.models.ads.AdAccount;
@@ -20,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static twitter4j.TwitterAdsConstants.*;
 
@@ -62,11 +60,11 @@ public class TwitterAdsAccountApiImpl implements TwitterAdsAccountApi {
     public List<TwitterAccountPermissions> getAccountPermissions(String accountId) throws TwitterException {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_FEATURES;
         HttpResponse httpResponse = twitterAdsClient.getWithoutMergeOfParams(baseUrl, null);
-        List<TwitterAccountPermissions> permissionsFromChannel = Lists.newArrayList();
+        List<TwitterAccountPermissions> permissionsFromChannel = new ArrayList<>();
         try {
             Type type = new TypeToken<BaseAdsListResponse<String>>() {}.getType();
             BaseAdsListResponse<String> permissions = TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
-            if (permissions == null || CollectionUtils.isEmpty(permissions.getData())) {
+            if (permissions == null || permissions.getData().isEmpty()) {
                 throw new TwitterException("Empty response returned for Account Permissions");
             }
             List<String> data = permissions.getData();
@@ -89,8 +87,7 @@ public class TwitterAdsAccountApiImpl implements TwitterAdsAccountApi {
 
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_PROMOTABLE_USERS;
-        Type type = new TypeToken<BaseAdsListResponse<PromotableUser>>() {
-        }.getType();
+        Type type = new TypeToken<BaseAdsListResponse<PromotableUser>>() {}.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 }
