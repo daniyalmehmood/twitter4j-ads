@@ -180,14 +180,14 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
     }
 
     private List<HttpParameter> validateUpdateCampaignParameters(String accountId, String campaignId, Optional<String> name, Long totalBudgetAmountLocalMicro,
-                                                                 Optional<Long> dailyBudgetAmountLocalMicro, Optional<String> startTime,
+                                                                   Optional<Long> dailyBudgetAmountLocalMicro, Optional<String> startTime,
                                                                  Optional<String> endTime, Optional<Boolean> paused,
                                                                  Optional<Boolean> standardDelivery, int frequencyCap, int durationInDays) {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(campaignId, "Campaign Id");
         List<HttpParameter> params = new ArrayList<>();
         //The Ones that can be changed to null
-        params.add(new HttpParameter(PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO, String.valueOf(totalBudgetAmountLocalMicro.orElse(null))));
+        params.add(new HttpParameter(PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO, String.valueOf(totalBudgetAmountLocalMicro)));
         //The Ones that cannot be changed to null below
         name.ifPresent(value -> params.add(new HttpParameter(PARAM_NAME, value)));
         dailyBudgetAmountLocalMicro.ifPresent(value -> params.add(new HttpParameter(PARAM_DAILY_BUDGET_AMOUNT_LOCAL_MICRO, value)));
