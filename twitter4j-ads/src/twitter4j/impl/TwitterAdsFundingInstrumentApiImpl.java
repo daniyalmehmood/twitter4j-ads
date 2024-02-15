@@ -7,6 +7,9 @@ import twitter4j.api.TwitterAdsFundingInstrumentApi;
 import twitter4j.models.ads.FundingInstrument;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.sort.FundingInstrumentSortByField;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.lang.reflect.Type;
@@ -32,7 +35,7 @@ public class TwitterAdsFundingInstrumentApiImpl implements TwitterAdsFundingInst
     }
 
     @Override
-    public BaseAdsListResponseIterable<FundingInstrument> getAllFundingInstruments(String accountId,boolean withDeleted, Optional<Collection<String>> fundingInstrumentIds,
+    public BaseAdsListResponseIterable<FundingInstrument> getAllFundingInstruments(String accountId, boolean withDeleted, Optional<Collection<String>> fundingInstrumentIds,
                                                                                    Optional<FundingInstrumentSortByField> sortByField) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         String fundingInstrumentIdsAsString = null;

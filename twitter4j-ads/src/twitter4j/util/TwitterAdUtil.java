@@ -3,8 +3,8 @@ package twitter4j.util;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import twitter4j.BaseAdsListResponse;
-import twitter4j.BaseAdsResponse;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.HttpResponse;
 import twitter4j.RateLimitStatus;
 

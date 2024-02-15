@@ -8,6 +8,9 @@ import twitter4j.api.TwitterAdsCardsApi;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.TwitterUUIDResponse;
 import twitter4j.models.ads.cards.*;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.lang.reflect.Type;

@@ -7,6 +7,7 @@ import twitter4j.api.TwitterAdsVideoApi;
 import twitter4j.models.video.AssociateVideoToAccountResponse;
 import twitter4j.models.video.TwitterAccountMediaResponse;
 import twitter4j.models.video.TwitterCreativeType;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.io.IOException;

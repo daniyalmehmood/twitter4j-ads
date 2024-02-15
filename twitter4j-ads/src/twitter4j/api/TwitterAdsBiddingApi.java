@@ -1,7 +1,7 @@
 package twitter4j.api;
 
 import com.google.common.base.Optional;
-import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsListResponseIterable;
 import twitter4j.TwitterException;
 import twitter4j.models.ads.BiddingRules;
 import twitter4j.models.ads.TwitterBidInfo;

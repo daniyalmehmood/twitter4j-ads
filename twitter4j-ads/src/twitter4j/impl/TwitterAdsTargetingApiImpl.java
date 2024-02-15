@@ -9,6 +9,9 @@ import twitter4j.api.TwitterAdsTargetingApi;
 import twitter4j.models.LocationType;
 import twitter4j.models.ads.*;
 import twitter4j.models.ads.tags.TwitterApplicationList;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.io.IOException;

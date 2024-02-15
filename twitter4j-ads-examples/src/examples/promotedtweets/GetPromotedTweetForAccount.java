@@ -2,13 +2,11 @@ package examples.PromotedTweet;
 
 import com.google.common.collect.Lists;
 import examples.BaseAdsTest;
-import twitter4j.BaseAdsListResponse;
-import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
 import twitter4j.TwitterAds;
 import twitter4j.TwitterException;
-import twitter4j.api.TwitterAdsLineItemApi;
 import twitter4j.api.TwitterAdsPromotedTweetApi;
-import twitter4j.models.ads.LineItem;
 import twitter4j.models.ads.PromotedTweets;
 
 import java.util.List;

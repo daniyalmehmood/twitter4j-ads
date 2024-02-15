@@ -9,11 +9,13 @@ import twitter4j.api.TwitterAdsStatApi;
 import twitter4j.models.Granularity;
 import twitter4j.models.TwitterSegmentationType;
 import twitter4j.models.ads.*;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
