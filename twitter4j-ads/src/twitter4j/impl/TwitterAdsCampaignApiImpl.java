@@ -1,5 +1,6 @@
 package twitter4j.impl;
 
+import com.google.gson.reflect.TypeToken;
 import twitter4j.*;
 import twitter4j.api.TwitterAdsCampaignApi;
 import twitter4j.models.ads.Campaign;
