@@ -1,7 +1,5 @@
 package twitter4j.impl;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import twitter4j.*;
 import twitter4j.api.TwitterAdsCardsApi;
@@ -14,8 +12,7 @@ import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static twitter4j.TwitterAdsConstants.*;
 
@@ -37,7 +34,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(cardId, "CardId");
         String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_LEAD_GENERATION_CARDS + cardId;
-        Type type = new TypeToken<BaseAdsResponse<TwitterLeadGenerationCard>>() {}.getType();
+        Type type = getType(BaseAdsResponse.class, TwitterLeadGenerationCard.class);
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
     }
 
@@ -46,16 +43,15 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                                                                                             boolean withDeleted, Optional<Integer> count)
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        List<HttpParameter> params = Lists.newArrayList();
+        List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (TwitterAdUtil.isNotEmpty(cardIds)) {
             params.add(new HttpParameter(PARAM_CARD_IDS, TwitterAdUtil.getCsv(cardIds)));
         }
-        if (count != null && count.isPresent()) {
-            params.add(new HttpParameter(PARAM_COUNT, count.get()));
-        }
+        count.ifPresent(c -> params.add(new HttpParameter(PARAM_COUNT, c)));
+
         String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_LEAD_GENERATION_CARDS;
-        Type type = new TypeToken<BaseAdsListResponse<TwitterLeadGenerationCard>>() {}.getType();
+        Type type = getType(BaseAdsListResponse.class, TwitterLeadGenerationCard.class);
         return twitterAdsClient.executeHttpListRequest(url, params, type);
     }
 
@@ -64,16 +60,15 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                                                                                                 boolean withDeleted, Optional<Integer> count)
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        List<HttpParameter> params = Lists.newArrayList();
+        List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (TwitterAdUtil.isNotEmpty(cardIds)) {
             params.add(new HttpParameter(PARAM_CARD_IDS, TwitterAdUtil.getCsv(cardIds)));
         }
-        if (count != null && count.isPresent()) {
-            params.add(new HttpParameter(PARAM_COUNT, count.get()));
-        }
+        count.ifPresent(c -> params.add(new HttpParameter(PARAM_COUNT, c)));
+
         String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
-        Type type = new TypeToken<BaseAdsListResponse<TwitterImageAppDownloadCard>>() {}.getType();
+        Type type = getType(BaseAdsListResponse.class, TwitterImageAppDownloadCard.class);
         return twitterAdsClient.executeHttpListRequest(url, params, type);
     }
 
@@ -82,7 +77,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                                                                                                 boolean withDeleted, Optional<Integer> count)
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        List<HttpParameter> params = Lists.newArrayList();
+        List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (TwitterAdUtil.isNotEmpty(cardIds)) {
             params.add(new HttpParameter(PARAM_CARD_IDS, TwitterAdUtil.getCsv(cardIds)));
@@ -130,7 +125,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsListResponseIterable<TwitterWebsiteCard> getAllWebsiteCards(String accountId, List<String> cardIds, boolean withDeleted,
                                                                               Optional<Integer> count) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        List<HttpParameter> params = Lists.newArrayList();
+        List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (TwitterAdUtil.isNotEmpty(cardIds)) {
             params.add(new HttpParameter(PARAM_CARD_IDS, TwitterAdUtil.getCsv(cardIds)));
@@ -149,7 +144,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsListResponseIterable<TwitterMobileAppCard> getAllAppDownloadCards(String accountId, List<String> cardIds, boolean withDeleted,
                                                                                     Optional<Integer> count) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        List<HttpParameter> params = Lists.newArrayList();
+        List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (TwitterAdUtil.isNotEmpty(cardIds)) {
             params.add(new HttpParameter(PARAM_CARD_IDS, TwitterAdUtil.getCsv(cardIds)));
@@ -220,7 +215,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     @Override
     public String postVideoCardImage(String imageTonLocation) throws TwitterException {
         TwitterAdUtil.ensureNotNull(imageTonLocation, "imageTonLocation");
-        List<HttpParameter> params = Lists.newArrayList();
+        List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter("location", imageTonLocation));
         TwitterUUIDResponse twitterUUIDResponse = twitterAdsClient
                 .executeRequest(UPLOAD_VIDEO_CARD_IMAGE_URL, params.toArray(new HttpParameter[params.size()]), TwitterUUIDResponse.class,
@@ -253,5 +248,9 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         }
 
         return params;
+    }
+
+    private Type getType(Class<?> rawType, Class<?> parameterType) {
+        return new TypeToken<BaseAdsResponse<TwitterLeadGenerationCard>>() {}.getType();
     }
 }
