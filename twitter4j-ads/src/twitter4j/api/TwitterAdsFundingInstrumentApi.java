@@ -9,33 +9,21 @@ import twitter4j.models.ads.sort.FundingInstrumentSortByField;
 
 import java.util.Collection;
 
-/**
- * User: abhay
- * Date: 4/5/16
- * Time: 10:36 AM
- */
 public interface TwitterAdsFundingInstrumentApi {
+    BaseAdsListResponseIterable<FundingInstrument> getAllFundingInstruments(String accountId, boolean withDeleted, Collection<String> fundingInstrumentIds, FundingInstrumentSortByField sortByField) throws TwitterException;
 
-    /**
-     * @param accountId            The identifier for the leveraged account.
-     * @param withDeleted          Include deleted results in your request. Defaults to false.
-     * @param fundingInstrumentIds (optional) Scope the response to just the desired funding instruments by specifying a Collection of identifiers. Up to 50 ids may be provided.
-     * @param sortByField          (optional) Sorts by supported attribute in ascending or descending order.
-     * @return Retrieve some or all funding instruments associated with the account.
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/funding_instruments">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/funding_instruments</a>
-     */
-    BaseAdsListResponseIterable<FundingInstrument> getAllFundingInstruments(String accountId,boolean withDeleted, Optional<Collection<String>> fundingInstrumentIds,
-                                                                            Optional<FundingInstrumentSortByField> sortByField) throws TwitterException;
+    BaseAdsResponse<FundingInstrument> getFundingInstrumentById(String accountId, String fundingInstrumentId, boolean withDeleted) throws TwitterException;
 
-    /**
-     * @param accountId           The identifier for the leveraged account.
-     * @param fundingInstrumentId The identifier for a funding instrument associated with the current account.
-     * @param withDeleted         Include deleted results in your request. Defaults to false.
-     * @return Retrieve a specific funding instrument associated with the account.
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/funding_instruments/%3Aid">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/funding_instruments/%3Aid</a>
-     */
-    BaseAdsResponse<FundingInstrument> getFundingInstrumentById(String accountId, String fundingInstrumentId, boolean withDeleted)
-            throws TwitterException;
+    // Overloads for optional parameters to adhere to best practices
+    default BaseAdsListResponseIterable<FundingInstrument> getAllFundingInstruments(String accountId, boolean withDeleted) throws TwitterException {
+        return getAllFundingInstruments(accountId, withDeleted, null, null);
+    }
+
+    default BaseAdsListResponseIterable<FundingInstrument> getAllFundingInstruments(String accountId, boolean withDeleted, Collection<String> fundingInstrumentIds) throws TwitterException {
+        return getAllFundingInstruments(accountId, withDeleted, fundingInstrumentIds, null);
+    }
+
+    default BaseAdsListResponseIterable<FundingInstrument> getAllFundingInstruments(String accountId, boolean withDeleted, FundingInstrumentSortByField sortByField) throws TwitterException {
+        return getAllFundingInstruments(accountId, withDeleted, null, sortByField);
+    }
 }
