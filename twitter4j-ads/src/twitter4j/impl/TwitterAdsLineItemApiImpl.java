@@ -25,11 +25,7 @@ import java.util.List;
 
 import static twitter4j.TwitterAdsConstants.*;
 
-/**
- * User: abhay
- * Date: 4/4/16
- * Time: 8:01 PM
- */
+
 public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
 
     private static final Integer MAX_REQUEST_PARAMETER_SIZE = 50;
