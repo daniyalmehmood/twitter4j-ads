@@ -1,6 +1,6 @@
 package examples.stats;
 
-import com.google.common.collect.Lists;
+
 import examples.BaseAdsTest;
 import twitter4j.*;
 import twitter4j.api.TwitterAdsStatApi;
@@ -11,13 +11,11 @@ import twitter4j.responses.BaseAdsListResponseIterable;
 import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * User: shivraj
- * Date: 12/05/16 2:08 PM.
- */
+
 public class GetAsyncTweetStatsForAccount extends BaseAdsTest {
 
     public static void main(String[] args) {
@@ -26,14 +24,14 @@ public class GetAsyncTweetStatsForAccount extends BaseAdsTest {
         long until = 0;
         long since = 0;
         try {
-            BaseAdsResponse<JobDetails> twitterAsyncJob = statApi.createAsyncJob("1b83s0", TwitterEntityType.CAMPAIGN, Lists.newArrayList("4u3mr"), since, until, Boolean.TRUE, Granularity.TOTAL, TwitterAdObjective.VIDEO_VIEWS, Placement.ALL_ON_TWITTER, null);
+            BaseAdsResponse<JobDetails> twitterAsyncJob = statApi.createAsyncJob("1b83s0", TwitterEntityType.CAMPAIGN, Arrays.asList("4u3mr"), since, until, Boolean.TRUE, Granularity.TOTAL, TwitterAdObjective.VIDEO_VIEWS, Placement.ALL_ON_TWITTER, null);
             BaseAdsListResponseIterable<JobDetails> jobExecutionDetails;
             boolean flag;
             long timeOut = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(2);
             do {
                 flag = false; //continue iterating as long as status of job of job is either queued, uploading or processing
                 TwitterAdUtil.reallySleep(10000L);
-                jobExecutionDetails = statApi.getJobExecutionDetails("1b83s0", Lists.newArrayList(twitterAsyncJob.getData().getJobId()));
+                jobExecutionDetails = statApi.getJobExecutionDetails("1b83s0", Arrays.asList(twitterAsyncJob.getData().getJobId()));
 
                 for (BaseAdsListResponse<JobDetails> base : jobExecutionDetails) {
                     List<JobDetails> baselist = base.getData();
@@ -45,7 +43,7 @@ public class GetAsyncTweetStatsForAccount extends BaseAdsTest {
                 }
             } while (flag && System.currentTimeMillis() <= timeOut);
 
-            List<TwitterEntityStatistics> twitterEntityStatsList = Lists.newArrayList();
+            List<TwitterEntityStatistics> twitterEntityStatsList = Arrays.asList();
 
             for (BaseAdsListResponse<JobDetails> base : jobExecutionDetails) {
                 List<JobDetails> baselist = base.getData();

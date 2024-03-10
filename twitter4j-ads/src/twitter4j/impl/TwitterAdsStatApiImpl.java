@@ -1,6 +1,6 @@
 package twitter4j.impl;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
@@ -25,11 +25,7 @@ import java.util.zip.GZIPInputStream;
 import static twitter4j.TwitterAdsConstants.*;
 import static twitter4j.TwitterAdsConstants.V1_PREFIX_STATS_JOB_ACCOUNTS_URI;
 
-/**
- * User: abhay
- * Date: 4/5/16
- * Time: 11:35 AM
- */
+
 public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
     private final TwitterAdsClient twitterAdsClient;
@@ -39,7 +35,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
     }
 
     public BaseAdsListResponseIterable<TwitterEntityStatistics> fetchStatsSync(String accountId, TwitterEntityType twitterEntity,
-                                                                               Collection<String> entityIds, long startTime, long endTime,
+                                                                               Collection<String> entityIds, Long startTime, Long endTime,
                                                                                boolean withDeleted, Granularity granularity,
                                                                                TwitterAdObjective objective, Placement placement)
             throws TwitterException {
@@ -73,8 +69,8 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
     }
 
     @Override
-    public BaseAdsResponse<JobDetails> createAsyncJob(String accountId, TwitterEntityType twitterEntityType, Collection<String> ids, long startTime,
-                                                      long endTime, boolean withDeleted, Granularity granularity,
+    public BaseAdsResponse<JobDetails> createAsyncJob(String accountId, TwitterEntityType twitterEntityType, Collection<String> ids, Long startTime,
+                                                      Long endTime, boolean withDeleted, Granularity granularity,
                                                       TwitterAdObjective twitterAdObjective, Placement placement,
                                                       Optional<TwitterSegmentationType> twitterSegmentationType) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
