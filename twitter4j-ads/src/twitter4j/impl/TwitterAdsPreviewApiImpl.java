@@ -13,10 +13,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: abhishekanand
- * Date: 02/05/16 3:11 PM.
- */
 public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
 
     private final TwitterAdsClient twitterAdsClient;
@@ -30,53 +26,49 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
                                                                                       String userId, List<String> mediaIds,
                                                                                       String cardId,
                                                                                       TwitterPreviewTarget twitterPreviewTarget) throws TwitterException {
-
         TwitterAdUtil.ensureNotNull(accountId, "account Id");
         TwitterAdUtil.ensureNotNull(status, "status");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_V1 + accountId + TwitterAdsConstants.TWEET_PREVIEW_PATH;
-        List<HttpParameter> params = new ArrayList<>();
+        var url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_V1 + accountId + TwitterAdsConstants.TWEET_PREVIEW_PATH;
+        var params = new ArrayList<HttpParameter>();
         params.add(new HttpParameter(TwitterAdsConstants.PARAM_ACCOUNT_ID, accountId));
         params.add(new HttpParameter(TwitterAdsConstants.PARAM_STATUS, status));
         if (TwitterAdUtil.isNotNullOrEmpty(userId)) {
             params.add(new HttpParameter(TwitterAdsConstants.PARAM_AS_USER_ID, userId));
         }
         if (!TwitterAdUtil.isNotEmpty(mediaIds) && mediaIds.size() > 4) {
-            throw new TwitterException("Media ids cannot be grater than 4");
+            throw new TwitterException("Media ids cannot be greater than 4");
         }
         if (twitterPreviewTarget == null) {
             twitterPreviewTarget = TwitterPreviewTarget.TWITTER_TIMELINE;
         }
         params.add(new HttpParameter(TwitterAdsConstants.TWEET_PREVIEW_TARGET, twitterPreviewTarget.name()));
 
-        switch (twitterPreviewTarget) {
-            case PUBLISHER_NETWORK:
-                if (!TwitterAdUtil.isNotEmpty(mediaIds)) {
-                    throw new TwitterException("For Preview of tweet using preview_target PUBLISHER_NETWORK, media ids is a compulsory field");
-                }
-                params.add(new HttpParameter(TwitterAdsConstants.PARAM_MEDIA_IDS, TwitterAdUtil.getCsv(mediaIds)));
-                break;
-            case TWITTER_TIMELINE:
-                params.add(new HttpParameter(TwitterAdsConstants.PARAM_MEDIA_IDS, TwitterAdUtil.getCsv(mediaIds)));
-                params.add(new HttpParameter(TwitterAdsConstants.PARAM_CARD_ID, cardId));
-                break;
+        // Simplified handling based on TwitterPreviewTarget
+        if (twitterPreviewTarget == TwitterPreviewTarget.PUBLISHER_NETWORK && !TwitterAdUtil.isNotEmpty(mediaIds)) {
+            throw new TwitterException("For Preview of tweet using preview_target PUBLISHER_NETWORK, media ids is a compulsory field");
         }
-        Type type = new TypeToken<BaseAdsListResponse<TwitterPreviewInfo>>() {
-        }.getType();
-        HttpResponse httpResponse = twitterAdsClient.get(url, params.toArray(new HttpParameter[params.size()]));
+        if (mediaIds != null && !mediaIds.isEmpty()) {
+            params.add(new HttpParameter(TwitterAdsConstants.PARAM_MEDIA_IDS, TwitterAdUtil.getCsv(mediaIds)));
+        }
+        if (cardId != null && !cardId.isBlank()) {
+            params.add(new HttpParameter(TwitterAdsConstants.PARAM_CARD_ID, cardId));
+        }
+
+        Type type = new TypeToken<BaseAdsListResponse<TwitterPreviewInfo>>(){}.getType();
         try {
+            var httpResponse = twitterAdsClient.get(url, params.toArray(new HttpParameter[0]));
             return TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
         } catch (IOException e) {
-            throw new TwitterException("Some error occurred while adapting response for previews");
+            throw new TwitterException("Some error occurred while adapting response for previews", e);
         }
     }
 
     @Override
     public BaseAdsListResponse<TwitterPreviewInfo> getPromotedTweetPreview(String accountId, String tweetId, String userId, TwitterPreviewTarget twitterPreviewTarget) throws TwitterException {
-
         TwitterAdUtil.ensureNotNull(accountId, "account Id");
-        TwitterAdUtil.ensureNotNull(tweetId, "status");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_V1 + accountId + TwitterAdsConstants.TWEET_PREVIEW_PATH + tweetId;
-        List<HttpParameter> params = new ArrayList<>();
+        TwitterAdUtil.ensureNotNull(tweetId, "tweetId");
+        var url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_V1 + accountId + TwitterAdsConstants.TWEET_PREVIEW_PATH + tweetId;
+        var params = new ArrayList<HttpParameter>();
         params.add(new HttpParameter(TwitterAdsConstants.PARAM_ACCOUNT_ID, accountId));
         params.add(new HttpParameter(TwitterAdsConstants.PARAM_TWEET_ID, tweetId));
         if (TwitterAdUtil.isNotNullOrEmpty(userId)) {
@@ -86,13 +78,13 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
             twitterPreviewTarget = TwitterPreviewTarget.TWITTER_TIMELINE;
         }
         params.add(new HttpParameter(TwitterAdsConstants.TWEET_PREVIEW_TARGET, twitterPreviewTarget.name()));
-        Type type = new TypeToken<BaseAdsListResponse<TwitterPreviewInfo>>() {
-        }.getType();
-        HttpResponse httpResponse = twitterAdsClient.get(url, params.toArray(new HttpParameter[params.size()]));
+
+        Type type = new TypeToken<BaseAdsListResponse<TwitterPreviewInfo>>(){}.getType();
         try {
+            var httpResponse = twitterAdsClient.get(url, params.toArray(new HttpParameter[0]));
             return TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
         } catch (IOException e) {
-            throw new TwitterException("Some error occurred while adapting response for previews");
+            throw new TwitterException("Some error occurred while adapting response for previews", e);
         }
     }
 }

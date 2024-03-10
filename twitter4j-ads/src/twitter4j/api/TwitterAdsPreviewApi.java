@@ -7,10 +7,6 @@ import twitter4j.models.ads.preview.TwitterPreviewTarget;
 
 import java.util.List;
 
-/**
- * User: abhishekanand
- * Date: 02/05/16 2:57 PM.
- */
 public interface TwitterAdsPreviewApi {
 
     /**
