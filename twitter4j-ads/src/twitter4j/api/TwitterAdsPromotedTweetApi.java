@@ -1,64 +1,60 @@
 package twitter4j.api;
 
-import com.google.common.base.Optional;
-import twitter4j.responses.BaseAdsListResponse;
-import twitter4j.responses.BaseAdsListResponseIterable;
-import twitter4j.responses.BaseAdsResponse;
 import twitter4j.TwitterException;
 import twitter4j.models.ads.PromotedTweets;
 import twitter4j.models.ads.sort.PromotedTweetsSortByField;
+import twitter4j.responses.BaseAdsListResponse;
+import twitter4j.responses.BaseAdsListResponseIterable;
+import twitter4j.responses.BaseAdsResponse;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * User: abhay
- * Date: 4/22/16
- * Time: 1:04 PM
- */
 public interface TwitterAdsPromotedTweetApi {
 
     /**
+     * Retrieves references to the Promoted Tweets associated with one or more line items.
+     *
      * @param accountId   The identifier for the leveraged account.
-     * @param lineItemId  A reference to the line item you are operating with in the request. Omitting the lineItemId will return all promoted
-     *                    tweets across all campaigns.
-     * @param withDeleted Include deleted results in your request. Defaults to false.
-     * @param sortByField (optional) Sorts by supported attribute in ascending or descending order.
-     * @param count       (optional) Specifies the number of Promoted Tweets to try to retrieve, up to a maximum of 1000 per distinct request.
-     * @param cursor      (optional) Specify a cursor to retrieve data from a specific page (function automatically handles paging upon iteration when you do not specify cursor value).
-     * @return Retrieve references to the Promoted Tweets associated with one or more line items.
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets</a>
+     * @param lineItemId  A reference to the line item, omitting returns all promoted tweets across campaigns.
+     * @param withDeleted Include deleted results in the request, defaults to false.
+     * @param count       Specifies the number of Promoted Tweets to retrieve, up to a max of 1000.
+     * @param cursor      Cursor for page retrieval, handles paging automatically if not specified.
+     * @param sortByField Sorts by supported attribute in ascending or descending order.
+     * @return An iterable of {@link PromotedTweets} associated with line items.
+     * @throws TwitterException If a Twitter API error occurs.
      */
-    BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, String lineItemId, boolean withDeleted,
-                                                                     Optional<Integer> count, String cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException;
-
+    BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, Optional<String> lineItemId, boolean withDeleted,
+                                                                     Optional<Integer> count, Optional<String> cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException;
 
     /**
+     * Retrieves references to the Promoted Tweets associated with a promotedTweetId.
+     *
      * @param accountId       The identifier for the leveraged account.
-     * @param promotedTweetId A reference to the promoted tweet you are operating with in the request.
-     * @return Retrieve references to the Promoted Tweets associated with the promotedTweetId.
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets</a>
+     * @param promotedTweetId A reference to the promoted tweet in question.
+     * @return A {@link BaseAdsResponse} containing {@link PromotedTweets} details.
+     * @throws TwitterException If a Twitter API error occurs.
      */
     BaseAdsResponse<PromotedTweets> getPromotedTweetsById(String accountId, String promotedTweetId) throws TwitterException;
 
     /**
+     * Creates Promoted Tweets for a given line item.
+     *
      * @param accountId  The identifier for the leveraged account.
-     * @param lineItemId Scope the response to just the desired line item
-     * @param tweetIds   tweet ids to promote
-     * @return created promoted tweet details
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/promoted_tweets">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/promoted_tweets</a>
+     * @param lineItemId The line item under which tweets will be promoted.
+     * @param tweetIds   The IDs of tweets to promote.
+     * @return A {@link BaseAdsListResponse} containing details of created Promoted Tweets.
+     * @throws TwitterException If a Twitter API error occurs.
      */
-    BaseAdsListResponse<PromotedTweets> createPromotedTweets(String accountId, String lineItemId, Collection<String> tweetIds)
-            throws TwitterException;
+    BaseAdsListResponse<PromotedTweets> createPromotedTweets(String accountId, String lineItemId, List<String> tweetIds) throws TwitterException;
 
     /**
+     * Deletes a Promoted Tweet.
+     *
      * @param accountId The identifier for the leveraged account.
-     * @param tweetId   Tweet Id to be deleted
-     * @return Promoted tweet with deleted field set to true
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/promoted_tweets/%3Aid">https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/promoted_tweets/%3Aid</a>
+     * @param tweetId   The ID of the tweet to delete from promotions.
+     * @return A {@link BaseAdsResponse} with the Promoted Tweet marked as deleted.
+     * @throws TwitterException If a Twitter API error occurs.
      */
     BaseAdsResponse<PromotedTweets> deletePromotedTweets(String accountId, String tweetId) throws TwitterException;
 

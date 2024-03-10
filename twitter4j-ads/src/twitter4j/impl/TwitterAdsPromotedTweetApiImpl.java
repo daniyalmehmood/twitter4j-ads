@@ -1,7 +1,11 @@
 package twitter4j.impl;
 
-import com.google.common.base.Optional;
-import com.google.gson.reflect.TypeToken;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import twitter4j.*;
 import twitter4j.api.TwitterAdsPromotedTweetApi;
 import twitter4j.models.ads.HttpVerb;
@@ -12,23 +16,11 @@ import twitter4j.responses.BaseAdsListResponseIterable;
 import twitter4j.responses.BaseAdsResponse;
 import twitter4j.util.TwitterAdUtil;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.google.gson.reflect.TypeToken;
 
-import static twitter4j.TwitterAdsConstants.*;
-
-/**
- * User: abhay
- * Date: 4/22/16
- * Time: 1:06 PM
- */
 public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetApi {
 
-    private static final Integer MAX_REQUEST_PARAMETER_SIZE = 50;
-
+    private static final int MAX_REQUEST_PARAMETER_SIZE = 50;
     private final TwitterAdsClient twitterAdsClient;
 
     public TwitterAdsPromotedTweetApiImpl(TwitterAdsClient twitterAdsClient) {
@@ -36,67 +28,61 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     }
 
     @Override
-    public BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, String lineItemId, boolean withDeleted,
-                                                                            Optional<Integer> count, String cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
-        List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
-        if (TwitterAdUtil.isNotNullOrEmpty(lineItemId)) {
-            params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
-        }
-        if (count != null && count.isPresent()) {
-            params.add(new HttpParameter(PARAM_COUNT, count.get()));
-        }
-        if (TwitterAdUtil.isNotNullOrEmpty(cursor)) {
-            params.add(new HttpParameter(PARAM_CURSOR, cursor));
-        }
-        if(sortByField != null && sortByField.isPresent()) {
-            params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
-        }
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_PROMOTED_TWEETS;
-        Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {}.getType();
+    public BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, Optional<String> lineItemId, boolean withDeleted,
+                                                                            Optional<Integer> count, Optional<String> cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException {
+        var params = new ArrayList<HttpParameter>();
+        populateCommonParameters(params, lineItemId, count, cursor, sortByField, withDeleted);
+        var baseUrl = constructBaseUrl(accountId, TwitterAdsConstants.PATH_PROMOTED_TWEETS);
+        Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>(){}.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
     @Override
     public BaseAdsResponse<PromotedTweets> getPromotedTweetsById(String accountId, String promotedTweetsId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
-        TwitterAdUtil.ensureNotNull(promotedTweetsId, "promotedTweetsId");
-        Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {}.getType();
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_PROMOTED_TWEETS + promotedTweetsId;
-        return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.GET);
+        var baseUrl = constructBaseUrl(accountId, TwitterAdsConstants.PATH_PROMOTED_TWEETS + promotedTweetsId);
+        Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>(){}.getType();
+        return twitterAdsClient.executeHttpRequest(baseUrl,  new HttpParameter[0], type, HttpVerb.GET);
     }
 
     @Override
-    public BaseAdsListResponse<PromotedTweets> createPromotedTweets(String accountId, String lineItemId, Collection<String> tweetIds)
+    public BaseAdsListResponse<PromotedTweets> createPromotedTweets(String accountId, String lineItemId, List<String> tweetIds)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
-        TwitterAdUtil.ensureNotNull(lineItemId, "Line Item Id");
         List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
-        String tweetIdsAsString;
-        if (TwitterAdUtil.isNotEmpty(tweetIds)) {
+        params.add(new HttpParameter(TwitterAdsConstants.PARAM_LINE_ITEM_ID, lineItemId));
+        if (!tweetIds.isEmpty()) {
             TwitterAdUtil.ensureMaxSize(tweetIds, MAX_REQUEST_PARAMETER_SIZE);
-            tweetIdsAsString = TwitterAdUtil.getCsv(tweetIds);
-            params.add(new HttpParameter(PARAM_TWEET_IDS, tweetIdsAsString));
+            var tweetIdsAsString = String.join(",", tweetIds);
+            params.add(new HttpParameter(TwitterAdsConstants.PARAM_TWEET_IDS, tweetIdsAsString));
         }
-        HttpResponse httpResponse = twitterAdsClient.postRequest(twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId +
-                                                                 PATH_PROMOTED_TWEETS, params.toArray(new HttpParameter[params.size()]));
-        try {
-            Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {}.getType();
-            return TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
-        } catch (IOException e) {
-            throw new TwitterException("Failed to parse promoted tweets.");
-        }
+        var response = twitterAdsClient.postRequest(constructBaseUrl(accountId, TwitterAdsConstants.PATH_PROMOTED_TWEETS), params.toArray(new HttpParameter[params.size()]));
+        return parseResponse(response, new TypeToken<BaseAdsListResponse<PromotedTweets>>(){}.getType());
     }
 
     @Override
     public BaseAdsResponse<PromotedTweets> deletePromotedTweets(String accountId, String tweetId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        TwitterAdUtil.ensureNotNull(tweetId, "Tweet Id");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_PROMOTED_TWEETS +
-                         tweetId;
-        Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {}.getType();
-        return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
+        var baseUrl = constructBaseUrl(accountId, TwitterAdsConstants.PATH_PROMOTED_TWEETS + tweetId);
+        Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>(){}.getType();
+        return twitterAdsClient.executeHttpRequest(baseUrl,  new HttpParameter[0], type, HttpVerb.DELETE);
+    }
+
+    private void populateCommonParameters(List<HttpParameter> params, Optional<String> lineItemId, Optional<Integer> count, Optional<String> cursor,
+                                          Optional<PromotedTweetsSortByField> sortByField, boolean withDeleted) {
+        lineItemId.ifPresent(li -> params.add(new HttpParameter(TwitterAdsConstants.PARAM_LINE_ITEM_ID, li)));
+        count.ifPresent(c -> params.add(new HttpParameter(TwitterAdsConstants.PARAM_COUNT, c)));
+        cursor.ifPresent(cur -> params.add(new HttpParameter(TwitterAdsConstants.PARAM_CURSOR, cur)));
+        sortByField.ifPresent(sbf -> params.add(new HttpParameter(TwitterAdsConstants.PARAM_SORT_BY, sbf.getField())));
+        params.add(new HttpParameter(TwitterAdsConstants.PARAM_WITH_DELETED, withDeleted));
+    }
+
+    private String constructBaseUrl(String accountId, String path) {
+        return twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_V1 + accountId + path;
+    }
+
+    private <T> T parseResponse(HttpResponse response, Type type) throws TwitterException {
+        try {
+            return (T) TwitterAdUtil.constructBaseAdsListResponse(response, response.asString(), type);
+        } catch (IOException e) {
+            throw new TwitterException("Failed to parse response.", e);
+        }
     }
 }
